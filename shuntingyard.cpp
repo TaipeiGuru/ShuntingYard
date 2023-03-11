@@ -11,7 +11,7 @@ dequeueQueue();
 
 int main() { 
   Node* stackHead = NULL;
-  Node* queueHead = NULL;
+  Node* treeHead = NULL;
   char input[20];
   char expression[20];
 
@@ -76,4 +76,22 @@ infixToPostfix(char* expression, Node* stackHead) {
     }
   }
   
+}
+
+createTree(Node* treeHead, char* expression) {
+  
+}
+
+printInfixTree(Node* treehead) {
+  if (treeHead != NULL) {
+    if (tree token is operator)
+       print (open parenthesis)
+    end if
+    infix (tree left subtree)
+    print (tree token)
+    infix (tree right subtree)
+    if (tree token is operator)
+       print (close parenthesis)
+    end if
+  }
 }
