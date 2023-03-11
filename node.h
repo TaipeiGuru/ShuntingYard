@@ -5,7 +5,7 @@ using namespace std;
 
 class Node {
  public:
-  Node(int value);
+  Node(int myValue);
   ~Node();
   int getValue();
   void setNext(Node* newnext);
