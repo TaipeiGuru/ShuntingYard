@@ -45,8 +45,15 @@ int main() {
   return 0;
 }
 
-void pushStack(Node* newNode) {
- 
+void pushStack(Node* &newNode, int value) {
+  if(newNode == NULL) {
+    newNode = new Node(value);
+  } else if(newNode->getNext() == NULL) {
+    Node* tempNode = new Node(value);
+    newNode->setNext(tempNode);
+  } else {
+    addStudent(newNode->getNext(), value);  
+  }
 }
 
 Node* popStack() {
@@ -65,17 +72,53 @@ Node* dequeueQueue() {
  
 }
 
-infixToPostfix(char* expression, Node* stackHead) {
+infixToPostfix(char* expression, Node* &stackHead) {
   char output[20];
+  for(int h = 0; h < 20; h++) {
+    output[h] = 'z';  
+  }
   int arraySize = sizeof(expression)/sizeof(expression[0]);
   for(int i = 0; i < arraySize; i++) {
-    if(expression[i] == " ") {
+    if(expression[i] == ' ') {
       i++; 
-    } else if(expression[i] == "+" || expression[i] == "-" || expression[i] == "/" || expression[i] == "*" || expression[i] == "^" || expression[i] == "(" || expression[i] == ")") {
-      
+    } else if(expression[i] == '+') {
+      pushStack(stackHead, -1);
+    } else if(expression[i] == '-') {
+      pushStack(stackHead, -2);      
+    } else if(expression[i] == '*') {
+      pushStack(stackHead, -3);      
+    } else if(expression[i] == '/') {
+      pushStack(stackHead, -4);      
+    } else if(expression[i] == '^') {
+      pushStack(stackHead, -5);      
+    } else if(expression[i] == '(') {
+      pushStack(stackHead, -6);      
+    } else if(expression[i] == ')') {
+      Node* myNode = popStack(stackHead);
+      if(myNode->getValue() == -1) {
+        
+      } else if(myNode->getValue() == -2) {
+        
+      } else if(myNode->getValue() == -3) {
+        
+      } else if(myNode->getValue() == -4) {
+        
+      } else if(myNode->getValue() == -5) {
+        
+      }
+    } else {
+      int j = 0;
+      while(output[j] == 'z') {
+        j++; 
+      }
+      output[j] = expression[i];
+      output[j+1] = ' ';
     }
+    
   }
   
+  
+  || expression[i] == "-" || expression[i] == "/" || expression[i] == "*" || expression[i] == "^" || expression[i] == "(" || expression[i] == ")") {
 }
 
 createTree(Node* treeHead, char* expression) {
