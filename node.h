@@ -10,8 +10,14 @@ class Node {
   int getValue();
   void setNext(Node* newnext);
   Node* getNext();
+  Node* getLeft();
+  Node* getRight();
+  void setRight(Node* right);
+  void setLeft(Node* left);
  private:
   Node* next;
+  Node* rightChild;
+  Node* leftChild;
   int value;
 };
 #endif
