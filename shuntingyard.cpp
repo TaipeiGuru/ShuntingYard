@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <ctype.h>
 
 using namespace std;
 
@@ -45,11 +46,15 @@ int main() {
   return 0;
 }
 
-void pushStack(Node* &newNode, int value) {
+void pushStack(Node* &newNode, int value, int precedence) {
   if(newNode == NULL) {
     newNode = new Node(value);
+    newNode->setPrecedence(precedence);
+    newNode->setAssociativity(associativity);
   } else if(newNode->getNext() == NULL) {
     Node* tempNode = new Node(value);
+    tempNode->setPrecedence(precedence);
+    tempNode->setAssociativity(associativity);
     newNode->setNext(tempNode);
   } else {
     addStudent(newNode->getNext(), value);  
@@ -60,7 +65,7 @@ Node* popStack() {
  
 }
 
-void peekStack() {
+Node* peekStack() {
  
 }
 
@@ -72,7 +77,7 @@ Node* dequeueQueue() {
  
 }
 
-infixToPostfix(char* expression, Node* &stackHead) {
+infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
   char output[20];
   for(int h = 0; h < 20; h++) {
     output[h] = 'z';  
@@ -82,37 +87,24 @@ infixToPostfix(char* expression, Node* &stackHead) {
     if(expression[i] == ' ') {
       i++; 
     } else if(expression[i] == '+') {
-      pushStack(stackHead, -1);
+      pushStack(stackHead, -1, 1);
     } else if(expression[i] == '-') {
-      pushStack(stackHead, -2);      
+      pushStack(stackHead, -2, 1);      
     } else if(expression[i] == '*') {
-      pushStack(stackHead, -3);      
+      pushStack(stackHead, -3, 2);      
     } else if(expression[i] == '/') {
-      pushStack(stackHead, -4);      
+      pushStack(stackHead, -4, 2);      
     } else if(expression[i] == '^') {
-      pushStack(stackHead, -5);      
+      pushStack(stackHead, -5, 3);      
     } else if(expression[i] == '(') {
-      pushStack(stackHead, -6);      
+      pushStack(stackHead, -6, 4);      
     } else if(expression[i] == ')') {
-      Node* myNode = popStack(stackHead);
-      if(myNode->getValue() == -1) {
-        
-      } else if(myNode->getValue() == -2) {
-        
-      } else if(myNode->getValue() == -3) {
-        
-      } else if(myNode->getValue() == -4) {
-        
-      } else if(myNode->getValue() == -5) {
-        
+      while(peekStack()->getValue() != -6) {
+        queueHead->setNext(popStack(stackHead)); 
       }
+      popStack(stackHead);
     } else {
-      int j = 0;
-      while(output[j] == 'z') {
-        j++; 
-      }
-      output[j] = expression[i];
-      output[j+1] = ' ';
+      
     }
     
   }
