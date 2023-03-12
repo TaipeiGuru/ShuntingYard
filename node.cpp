@@ -24,3 +24,19 @@ Node* Node::getNext() {
 int Node::getValue() {
   return value;
 }
+
+Node* getRight() {
+  return rightChild; 
+}
+
+Node* getLeft() {
+  return leftChild; 
+}
+
+void setRight(Node* right) {
+  rightChild = right; 
+}
+
+void setLeft(Node* left) {
+  leftChild = left; 
+}
