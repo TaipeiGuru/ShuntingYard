@@ -12,6 +12,7 @@ void enqueueQueue(Node* &queueHead, Node* newNode);
 Node* dequeueQueue(Node* &queueHead);
 void readQueue(Node* queueHead);
 void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead);
+void createTree(Node* &treeStackHead, Node* queueHead);
 
 int main() { 
   Node* stackHead = NULL;
@@ -36,11 +37,11 @@ int main() {
     cin.ignore(10000, '\n');
     
     if(strcmp(input, "PREFIX") == 0) {
-
+      printPrefix(treeStackHead);
     } else if(strcmp(input, "POSTFIX") == 0) {
-      
+      printPostfix(treeStackHead);
     } else if(strcmp(input, "INFIX") == 0) {
-
+      printInfix(treeStackHead);
     } else if(strcmp(input, "QUIT") == 0) {
       active = false; 
     } else {
@@ -154,6 +155,7 @@ void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
   }
   cout << "Postfix notation: ";
   readQueue(queueHead);
+  createTree();
 }
 
 void readQueue(Node* queueHead) {
@@ -180,11 +182,21 @@ void readQueue(Node* queueHead) {
   }
 }
 
-/*createTree(Node* treeHead, char* expression) {
-  
+void createTree(Node* &treeStackHead, Node* queueHead) {
+  Node* tempNode;
+  while(queueHead != NULL) {
+    tempNode = dequeueQueue(queueHead);
+    if(tempNode->getValue() >= 0) {
+      pushStack(treeStackHead, tempNode->getValue(), 0);
+    } else {
+      tempNode->setRightChild(popStack(treeStackHead));
+      tempNode->setLeftChild(popStack(treeStackHead));
+      pushStack(treeStackHead, tempNode->getValue(), tempNode->getPrecedence());
+    }
+  }
 }
 
-printInfixTree(Node* treehead) {
+/*printInfix(Node* treeStackHead) {
   if (treeHead != NULL) {
     if (tree token is operator)
        print (open parenthesis)
