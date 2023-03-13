@@ -15,6 +15,7 @@ class Node {
   void setRight(Node* right);
   void setLeft(Node* left);
   void setPrecedence(int value);
+  int getPrecedence();
  private:
   Node* next;
   Node* rightChild;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <ctype.h>
 #include "node.h"
 
 using namespace std;
@@ -15,8 +16,9 @@ void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead);
 int main() { 
   Node* stackHead = NULL;
   Node* queueHead = NULL;
+  Node* treeStackHead = NULL;
   char input[20];
-  char expression[20];
+  char expression[50];
 
   cout << "Welcome to Shunting Yard!" << endl;
   
@@ -24,7 +26,7 @@ int main() {
   bool active = true;
   while(active == true) {
     cout << "Please input your expression in infix notation: " << endl;
-    cin.get(expression, 20);
+    cin.get(expression, 50);
     cin.clear();
     cin.ignore(10000, '\n');
     infixToPostfix(expression, stackHead, queueHead);
@@ -62,7 +64,7 @@ void pushStack(Node* &stackHead, int value, int precedence) {
 
 Node* popStack(Node* &stackHead) {
   if(stackHead == NULL) {
-    cout << "There's nothing in the stack." << endl;
+    return NULL;
   } else {
     Node* tempNode = stackHead;
     stackHead = stackHead->getNext();
@@ -72,11 +74,11 @@ Node* popStack(Node* &stackHead) {
 }
 
 Node* peekStack(Node* stackHead) {
- if(stackHead == NULL) {
-  cout << "There's nothing in the stack." << endl; 
- } else {
-  return stackHead; 
- }
+  if(stackHead == NULL) {
+    return NULL;
+  } else {
+    return stackHead; 
+  }
 }
 
 void enqueueQueue(Node* &queueHead, Node* newNode) {
@@ -95,7 +97,7 @@ void enqueueQueue(Node* &queueHead, Node* newNode) {
 
 Node* dequeueQueue(Node* &queueHead) {
   if(queueHead == NULL) {
-    cout << "There's nothing in the queue." << endl;
+    return NULL;
   } else {
     Node* tempNode = queueHead;
     queueHead = queueHead->getNext();
@@ -108,23 +110,39 @@ void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
   int arraySize = strlen(expression);
   for(int i = 0; i < arraySize; i++) {
     if(expression[i] == '+') {
+      while(peekStack(stackHead) != NULL && peekStack(stackHead)->getPrecedence() >= 1 && peekStack(stackHead)->getValue() != -6) {
+	enqueueQueue(queueHead, popStack(stackHead));
+      }
       pushStack(stackHead, -1, 1);
     } else if(expression[i] == '-') {
+      while(peekStack(stackHead) != NULL && peekStack(stackHead)->getPrecedence() >= 1 && peekStack(stackHead)->getValue() != -6) {
+	enqueueQueue(queueHead, popStack(stackHead));
+      }
       pushStack(stackHead, -2, 1);      
     } else if(expression[i] == '*') {
+      while(peekStack(stackHead) != NULL && peekStack(stackHead)->getPrecedence() >= 2 && peekStack(stackHead)->getValue() != -6) {
+	enqueueQueue(queueHead, popStack(stackHead));
+      }
       pushStack(stackHead, -3, 2);      
     } else if(expression[i] == '/') {
+      while(peekStack(stackHead) != NULL && peekStack(stackHead)->getPrecedence() >= 2 && peekStack(stackHead)->getValue() != -6) {
+	enqueueQueue(queueHead, popStack(stackHead));
+      }
       pushStack(stackHead, -4, 2);      
     } else if(expression[i] == '^') {
+      while(peekStack(stackHead) != NULL && peekStack(stackHead)->getPrecedence() >= 3 && peekStack(stackHead)->getValue() != -6) {
+	enqueueQueue(queueHead, popStack(stackHead));
+      }
       pushStack(stackHead, -5, 3);      
     } else if(expression[i] == '(') {
       pushStack(stackHead, -6, 4);      
     } else if(expression[i] == ')') {
       while(peekStack(stackHead)->getValue() != -6) {
+	cout << peekStack(stackHead)->getValue() << endl;
         enqueueQueue(queueHead, popStack(stackHead)); 
       }
       popStack(stackHead);
-    } else if (expression[i] != ' ') {
+    } else if (isdigit(expression[i]) == true) {
       int value = expression[i] - 48;
       Node* newNode = new Node(value);
       newNode->setPrecedence(0);

@@ -42,3 +42,7 @@ void Node::setLeft(Node* left) {
 void Node::setPrecedence(int value) {
   precedence = value;
 }
+
+int Node::getPrecedence() {
+  return precedence;
+}
