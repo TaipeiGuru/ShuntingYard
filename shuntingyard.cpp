@@ -4,11 +4,11 @@
 
 using namespace std;
 
-void pushStack(Node* newNode);
-Node* popStack();
-void peekStack();
-enqueueQueue(Node* queueHead, Node* newNode);
-dequeueQueue();
+void pushStack(Node* &stackHead, int value, int precedence);
+Node* popStack(Node* &stackHead);
+void peekStack(Node* stackhead);
+void enqueueQueue(Node* &queueHead, Node* newNode);
+Node* dequeueQueue(Node* &queueHead);
 
 int main() { 
   Node* stackHead = NULL;
@@ -66,7 +66,11 @@ Node* popStack(Node* &stackHead) {
 }
 
 Node* peekStack(Node* stackHead) {
- 
+ if(stackHead == NULL) {
+  cout << "There's nothing in the stack." << endl; 
+ } else {
+  return stackHead; 
+ }
 }
 
 void enqueueQueue(Node* &queueHead, Node* newNode) {
@@ -78,7 +82,10 @@ void enqueueQueue(Node* &queueHead, Node* newNode) {
 }
 
 Node* dequeueQueue(Node* &queueHead) {
-  
+  Node* tempNode = queueHead;
+  queueHead = queueHead->getNext();
+  tempNode->setNext(NULL);
+  return tempNode;
 }
 
 infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
@@ -108,14 +115,34 @@ infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
       newNode->setPrecedence(0);
       enqueueQueue(queueHead, newNode);
     }
-    
+    readQueue(queueHead);
   }
-  
-  
-  || expression[i] == "-" || expression[i] == "/" || expression[i] == "*" || expression[i] == "^" || expression[i] == "(" || expression[i] == ")") {
 }
 
-createTree(Node* treeHead, char* expression) {
+void readQueue(Node* queueHead) {
+  if(queueHead != NULL) {
+    if(queueHead->getValue() == -1) {
+      cout << "+" << endl; 
+    } else if(queueHead->getValue() == -2) {
+      cout << "-" << endl; 
+    } else if(queueHead->getValue() == -3) {
+      cout << "*" << endl; 
+    } else if(queueHead->getValue() == -4) {
+      cout << "/" << endl; 
+    } else if(queueHead->getValue() == -5) {
+      cout << "^" << endl; 
+    } else if(queueHead->getValue() == -6) {
+      cout << "(" << endl; 
+    } else if(queueHead->getValue() == -7) {
+      cout << ")" << endl; 
+    } else {
+      cout << queueHead->getValue() << endl;
+    }
+    cout << " " << endl;
+  }
+}
+
+/*createTree(Node* treeHead, char* expression) {
   
 }
 
@@ -132,3 +159,4 @@ printInfixTree(Node* treehead) {
     end if
   }
 }
+*/
