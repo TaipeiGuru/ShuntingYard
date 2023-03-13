@@ -61,6 +61,7 @@ void pushStack(Node* &stackhead, int value, int precedence) {
 Node* popStack(Node* &stackHead) {
   Node* tempNode = stackHead;
   stackHead = stackHead->getNext();
+  tempNode->setNext(NULL);
   return tempNode;
 }
 
