@@ -14,10 +14,12 @@ class Node {
   Node* getRight();
   void setRight(Node* right);
   void setLeft(Node* left);
+  void setPrecedence(int value);
  private:
   Node* next;
   Node* rightChild;
   Node* leftChild;
   int value;
+  int precedence;
 };
 #endif
