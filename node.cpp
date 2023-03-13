@@ -10,7 +10,6 @@ Node::Node(int myValue) {
 
 Node::~Node() {
   next = NULL;
-  delete value;
 }
 
 void Node::setNext(Node* newnext) {
@@ -25,18 +24,21 @@ int Node::getValue() {
   return value;
 }
 
-Node* getRight() {
+Node* Node::getRight() {
   return rightChild; 
 }
 
-Node* getLeft() {
+Node* Node::getLeft() {
   return leftChild; 
 }
 
-void setRight(Node* right) {
+void Node::setRight(Node* right) {
   rightChild = right; 
 }
 
-void setLeft(Node* left) {
+void Node::setLeft(Node* left) {
   leftChild = left; 
+}
+void Node::setPrecedence(int value) {
+  precedence = value;
 }
