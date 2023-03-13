@@ -1,18 +1,20 @@
 #include <iostream>
 #include <cstring>
-#include <ctype.h>
+#include "node.h"
 
 using namespace std;
 
 void pushStack(Node* &stackHead, int value, int precedence);
 Node* popStack(Node* &stackHead);
-void peekStack(Node* stackhead);
+Node* peekStack(Node* stackhead);
 void enqueueQueue(Node* &queueHead, Node* newNode);
 Node* dequeueQueue(Node* &queueHead);
+void readQueue(Node* queueHead);
+void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead);
 
 int main() { 
   Node* stackHead = NULL;
-  Node* treeHead = NULL;
+  Node* queueHead = NULL;
   char input[20];
   char expression[20];
 
@@ -22,10 +24,10 @@ int main() {
   bool active = true;
   while(active == true) {
     cout << "Please input your expression in infix notation: " << endl;
-    cin >> expression;
+    cin.get(expression, 20);
     cin.clear();
     cin.ignore(10000, '\n');
-    infixToPostfix(expression, stackHead);
+    infixToPostfix(expression, stackHead, queueHead);
     cout << "\nWhich notation would you like to output? Your options are \"INFIX,\" \"PREFIX,\" and \"POSTFIX.\" You may also \"QUIT.\"" << endl;
     cin >> input;
     cin.clear();
@@ -46,7 +48,7 @@ int main() {
   return 0;
 }
 
-void pushStack(Node* &stackhead, int value, int precedence) {
+void pushStack(Node* &stackHead, int value, int precedence) {
   if(stackHead == NULL) {
     stackHead = new Node(value);
     stackHead->setPrecedence(precedence);
@@ -59,10 +61,14 @@ void pushStack(Node* &stackhead, int value, int precedence) {
 }
 
 Node* popStack(Node* &stackHead) {
-  Node* tempNode = stackHead;
-  stackHead = stackHead->getNext();
-  tempNode->setNext(NULL);
-  return tempNode;
+  if(stackHead == NULL) {
+    cout << "There's nothing in the stack." << endl;
+  } else {
+    Node* tempNode = stackHead;
+    stackHead = stackHead->getNext();
+    tempNode->setNext(NULL);
+    return tempNode;
+  }
 }
 
 Node* peekStack(Node* stackHead) {
@@ -74,26 +80,34 @@ Node* peekStack(Node* stackHead) {
 }
 
 void enqueueQueue(Node* &queueHead, Node* newNode) {
-  if(newNode->getNext() == NULL) {
-    newNode->setNext(newNode);
+  if(queueHead == NULL) {
+    queueHead = newNode;
+    newNode->setNext(NULL);
   } else {
-    enqueueQueue(queueHead->getNext(), newNode);  
+    if(queueHead->getNext() == NULL) {
+      queueHead->setNext(newNode);
+    } else {
+      Node* tempNode = queueHead->getNext();
+      enqueueQueue(tempNode, newNode);
+    }
   }
 }
 
 Node* dequeueQueue(Node* &queueHead) {
-  Node* tempNode = queueHead;
-  queueHead = queueHead->getNext();
-  tempNode->setNext(NULL);
-  return tempNode;
+  if(queueHead == NULL) {
+    cout << "There's nothing in the queue." << endl;
+  } else {
+    Node* tempNode = queueHead;
+    queueHead = queueHead->getNext();
+    tempNode->setNext(NULL);
+    return tempNode;
+  }
 }
 
-infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
-  int arraySize = sizeof(expression)/sizeof(expression[0]);
+void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
+  int arraySize = strlen(expression);
   for(int i = 0; i < arraySize; i++) {
-    if(expression[i] == ' ') {
-      i++; 
-    } else if(expression[i] == '+') {
+    if(expression[i] == '+') {
       pushStack(stackHead, -1, 1);
     } else if(expression[i] == '-') {
       pushStack(stackHead, -2, 1);      
@@ -106,39 +120,44 @@ infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
     } else if(expression[i] == '(') {
       pushStack(stackHead, -6, 4);      
     } else if(expression[i] == ')') {
-      while(peekStack()->getValue() != -6) {
+      while(peekStack(stackHead)->getValue() != -6) {
         enqueueQueue(queueHead, popStack(stackHead)); 
       }
       popStack(stackHead);
-    } else {
-      Node* newNode = new Node((int)expression[i]);
+    } else if (expression[i] != ' ') {
+      int value = expression[i] - 48;
+      Node* newNode = new Node(value);
       newNode->setPrecedence(0);
       enqueueQueue(queueHead, newNode);
     }
-    readQueue(queueHead);
   }
+  while(stackHead != NULL) {
+    enqueueQueue(queueHead, popStack(stackHead));
+  }
+  readQueue(queueHead);
 }
 
 void readQueue(Node* queueHead) {
   if(queueHead != NULL) {
     if(queueHead->getValue() == -1) {
-      cout << "+" << endl; 
+      cout << "+"; 
     } else if(queueHead->getValue() == -2) {
-      cout << "-" << endl; 
+      cout << "-"; 
     } else if(queueHead->getValue() == -3) {
-      cout << "*" << endl; 
+      cout << "*"; 
     } else if(queueHead->getValue() == -4) {
-      cout << "/" << endl; 
+      cout << "/"; 
     } else if(queueHead->getValue() == -5) {
-      cout << "^" << endl; 
+      cout << "^"; 
     } else if(queueHead->getValue() == -6) {
-      cout << "(" << endl; 
+      cout << "("; 
     } else if(queueHead->getValue() == -7) {
-      cout << ")" << endl; 
+      cout << ")"; 
     } else {
-      cout << queueHead->getValue() << endl;
+      cout << queueHead->getValue();
     }
-    cout << " " << endl;
+    cout << " ";
+    readQueue(queueHead->getNext());
   }
 }
 
