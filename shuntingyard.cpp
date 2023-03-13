@@ -152,6 +152,7 @@ void infixToPostfix(char* expression, Node* &stackHead, Node* &queueHead) {
   while(stackHead != NULL) {
     enqueueQueue(queueHead, popStack(stackHead));
   }
+  cout << "Postfix notation: ";
   readQueue(queueHead);
 }
 

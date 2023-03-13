@@ -5,6 +5,8 @@ using namespace std;
 
 Node::Node(int myValue) {
   next = NULL;
+  leftChild = NULL;
+  rightChild = NULL;
   value = myValue;
 }
 
